@@ -15,10 +15,10 @@
       <div class="page-body tabs-margin-bottom">
         <list class="body-content-list" style="columns: {{columns}}; flex-direction: {{direction}}">
           <list-item style="{{styleObj}}" class="list-item-sku" for="{{ skuList }}">
-            <div class="list-item-sku-item">
-              <image class="product-imgshape" src="{{$item.imgurl}}"></image>
-              <text class="product-title">{{ $item.title }}</text>
-              <text class="product-subtitle" lines="1" text-overflow="ellipsis">{{ $item.subtitle }}</text>
+            <div class="list-item-sku-item" onclick="showDetail($item)">
+              <image class="product-imgshape" src="{{$item.img}}"></image>
+              <text class="product-title" lines="1" text-overflow="ellipsis">{{ $item.title }}</text>
+              <text class="product-subtitle" lines="1" text-overflow="ellipsis">{{ $item.desc }}</text>
             </div>
           </list-item>
         </list>
@@ -32,6 +32,9 @@
 
 <script>
   import device from '@system.device'
+  import prompt from '@system.prompt'
+
+  import sku_list from '../../../mock/sku.json'
 
   export default {
     private: {
@@ -49,7 +52,7 @@
         return this.direction === 'row' ? 1 : Math.floor(this.windowWidthInDP / 300)
       },
       styleObj () {
-        return !this.isReady ? '' : this.direction === 'row' ? {width: '300dp', height: '100%'} : ''
+        return !this.isReady ? '' : this.direction === 'row' ? {width: '300', height: '100%'} : ''
       },
       mode () {
         return !this.isReady || !this.shoulderHeight ? 'vertical' : this.direction == 'column' && this.windowHeightInDP > this.shoulderHeight + 400 * 2 + 80 ? 'horizontal' : 'vertical'
@@ -60,14 +63,7 @@
       this.getScreenInfo()
       // 生成列表内容
       let loop = 0
-      while(loop < 20) {
-        this.skuList.push({
-          title: '超级飞侠',
-          subtitle: '看超级飞侠，什么都不怕',
-          imgurl: '/Common/imgs/products/1589364749722.jpg'
-        })
-        loop++
-      }
+      this.skuList = sku_list
     },
     getScreenInfo () {
       let self = this
@@ -86,6 +82,11 @@
           self.windowWidthInDP = windowWidthInDP
           self.windowHeightInDP = windowHeightInDP
         }
+      })
+    },
+    showDetail(item) {
+      prompt.showToast({
+        message: `您点击了页签：${item.title}`
       })
     },
     getShoulderRect(event) {
