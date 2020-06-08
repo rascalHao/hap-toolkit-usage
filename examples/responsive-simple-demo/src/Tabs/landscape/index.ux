@@ -15,7 +15,7 @@
       <div class="page-body tabs-margin-bottom">
         <list class="body-content-list" style="columns: {{columns}}; flex-direction: {{direction}}">
           <list-item style="{{styleObj}}" class="list-item-sku" for="{{ skuList }}">
-            <div class="list-item-sku-item">
+            <div class="list-item-sku-item" onclick="showDeatil($item)" vtags="{{$item.title}}">
               <image class="product-imgshape" src="{{$item.img}}"></image>
               <text class="product-title" lines="1" text-overflow="ellipsis">{{$item.title}}</text>
               <text class="product-subtitle" lines="1" text-overflow="ellipsis">{{$item.desc}}</text>
@@ -31,8 +31,10 @@
 </template>
 
 <script>
+  import vui from '@service.vui'
   import device from '@system.device'
   import prompt from '@system.prompt'
+  import router from '@system.router'
 
   import mockSkuList from '../../../mock/sku.json'
 
@@ -87,6 +89,27 @@
     getShoulderRect(event) {
       this.shoulderHeight = event.offsetHeight
       this.isReady = true
+    },
+    showDeatil(item) {
+      this.requestTts(item)
+      router.push({
+        uri: 'Tabs/landscape/detail',
+        params: {
+          desc: item.desc,
+          img: item.img
+        }
+      })
+    },
+    requestTts(item) {
+      vui.requestTts({
+        text: item.title,
+        success: function(){
+          console.log(`### 内置语音接口 ### TTS成功 播报内容：${item.title}`)
+        },
+        fail: function(err){
+          console.log(`### 内置语音接口 ### TTS失败：`, err)
+        }
+      })
     }
   }
 </script>

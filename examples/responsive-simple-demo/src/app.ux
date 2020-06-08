@@ -2,12 +2,47 @@
   /**
    * @file 应用级别的配置，供所有页面公用
    */
+  import vui from '@service.vui'
 
   import './global'
   import util from './util'
 
   export default {
     showMenu: util.showMenu,
-    createShortcut: util.createShortcut
+    createShortcut: util.createShortcut,
+    async onCreate() {
+      this.initVui()
+        .then(() => {
+          this.openMic()
+        })
+    },
+    initVui () {
+      return new Promise((resolve, reject) => {
+        vui.initialize({
+          success: function(){
+            console.log(`### initialize ### 初始化成功`)
+            resolve()
+          },
+          fail: function(err){
+            console.log(`### initialize ### 初始化失败：`, err)
+            reject(err)
+          }
+        })
+      })
+    },
+    openMic () {
+      return new Promise((resolve, reject) => {
+        vui.openMic({
+          success: function(){
+            console.log(`### openMic ### 开麦成功`)
+            resolve()
+          },
+          fail: function(err){
+            console.log(`### openMic ### 开麦失败：`, err)
+            reject(err)
+          }
+        })
+      })
+    }
   }
 </script>
